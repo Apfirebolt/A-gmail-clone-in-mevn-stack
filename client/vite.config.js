@@ -5,6 +5,12 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   server: {
-      port: 8080,
-  }
+    port: 8080,
+    proxy: {
+      '/attachments': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
+  },
 })
