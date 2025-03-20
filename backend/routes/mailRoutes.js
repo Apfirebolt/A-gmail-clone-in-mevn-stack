@@ -1,16 +1,56 @@
 import express from "express";
+import multer from "multer";
+import path from "path";
 const router = express.Router();
 import {
-    createEmail,
-    getEmail,
-    getUserEmails,
-    deleteEmail,
-    updateEmail,
+  createEmail,
+  getEmail,
+  getUserEmails,
+  deleteEmail,
+  updateEmail,
 } from "../controllers/mailController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
-router.route("/").post(protect, createEmail).get(protect, getUserEmails);
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, "attachments/");
+  },
+  filename(req, file, cb) {
+    cb(
+      null,
+      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+    );
+  },
+});
 
-router.route("/:id").get(protect, getEmail).delete(protect, deleteEmail).patch(protect, updateEmail);
+function checkFileType(file, cb) {
+  const filetypes = /jpg|jpeg|png/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (extname && mimetype) {
+    return cb(null, true);
+  } else {
+    cb({ message: "Images only!" });
+  }
+}
+
+const upload = multer({
+  storage,
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
+  },
+});
+
+router
+  .route("/")
+  .post(protect, upload.single("attachment"), createEmail)
+  .get(protect, getUserEmails);
+
+router
+  .route("/:id")
+  .get(protect, getEmail)
+  .delete(protect, deleteEmail)
+  .patch(protect, updateEmail);
 
 export default router;

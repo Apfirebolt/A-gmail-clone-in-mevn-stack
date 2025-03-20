@@ -20,9 +20,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 app.use(cors());
+const __dirname = path.resolve();
 
 app.use('/api/users', userRoutes);
 app.use('/api/emails', emailRoutes);
+app.use('/attachments', express.static(path.join(__dirname, '/attachments')));
 
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();

@@ -1,8 +1,13 @@
 .DS_Store
 node_modules
+attachments
 /dist
 /resources
 /components
+
+
+# Media files
+attachments
 
 # misc
 /.sass-cache

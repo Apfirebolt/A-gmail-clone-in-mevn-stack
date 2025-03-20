@@ -113,6 +113,7 @@
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="attachment"
             type="file"
+            @change="handleFileChange"
           />
         </div>
         <ul
@@ -156,7 +157,7 @@ const authData = computed(() => useAuth().getAuthData);
 let selected = ref(users[0]);
 const subject = ref("");
 const body = ref("");
-const attachment = ref("");
+const attachment = ref(null);
 const errorList = ref([]);
 let query = ref("");
 
@@ -170,6 +171,10 @@ let filteredPeople = computed(() =>
           .includes(query.value.toLowerCase().replace(/\s+/g, ""))
       )
 );
+
+const handleFileChange = (event) => {
+  attachment.value = event.target.files[0];
+};
 
 const sentEmailUtil = async () => {
   errorList.value = [];
@@ -196,7 +201,14 @@ const sentEmailUtil = async () => {
     },
     attachment: attachment.value,
   };
-  await emailStore.sendEmail(emailData);
+  const emailFormData = new FormData();
+  emailFormData.append("user", emailData.user);
+  emailFormData.append("subject", emailData.subject);
+  emailFormData.append("content", emailData.content);
+  emailFormData.append("from", JSON.stringify(emailData.from));
+  emailFormData.append("attachment", emailData.attachment);
+
+  await emailStore.sendEmail(emailFormData);
   await emailStore.getEmailsAction();
 };
 

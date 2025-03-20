@@ -38,10 +38,19 @@ const getUserEmails = asyncHandler(async (req, res) => {
 // @access  Private - User
 const createEmail = asyncHandler(async (req, res) => {
   const { subject, content, isImportant, from, user } = req.body;
+  // convert from to json, since it was not directly accessible from the form data object
+  const fromData = JSON.parse(from);
+  console.log("From data", req.body);
 
-  if (!subject || !content || !from || !from.name || !from.email) {
+  if (!subject || !content || !from || !fromData.name || !fromData.email) {
     res.status(400);
     throw new Error("All required fields must be filled");
+  }
+
+  // Handle attachments
+  let attachments = [];
+  if (req.file) {
+    attachments = [req.file.path]; // Store the file path
   }
 
   const email = await Email.create({
@@ -49,7 +58,8 @@ const createEmail = asyncHandler(async (req, res) => {
     subject,
     content,
     isImportant,
-    from,
+    attachments,
+    from: fromData,
   });
 
   if (email) {
@@ -93,15 +103,14 @@ const updateEmail = asyncHandler(async (req, res) => {
   const { isImportant, isRead, isDeleted } = req.body;
   const email = await Email.findById(req.params.id);
 
-  if (
-    email.user.toString() !== req.user._id.toString()
-  ) {
+  if (email.user.toString() !== req.user._id.toString()) {
     res.status(403);
     throw new Error("Only email owner can update email");
   }
 
   if (email) {
-    email.isImportant = isImportant !== undefined ? isImportant : email.isImportant;
+    email.isImportant =
+      isImportant !== undefined ? isImportant : email.isImportant;
     email.isRead = isRead !== undefined ? isRead : email.isRead;
     email.isDeleted = isDeleted !== undefined ? isDeleted : email.isDeleted;
 
@@ -119,9 +128,7 @@ const updateEmail = asyncHandler(async (req, res) => {
 const getEmail = asyncHandler(async (req, res) => {
   const email = await Email.findById(req.params.id);
 
-  if (
-    email.user.toString() !== req.user._id.toString()
-  ) {
+  if (email.user.toString() !== req.user._id.toString()) {
     res.status(403);
     throw new Error("Only email owner can view email");
   }
@@ -134,10 +141,4 @@ const getEmail = asyncHandler(async (req, res) => {
   }
 });
 
-export {
-  getUserEmails,
-  createEmail,
-  deleteEmail,
-  getEmail,
-  updateEmail,
-};
+export { getUserEmails, createEmail, deleteEmail, getEmail, updateEmail };
