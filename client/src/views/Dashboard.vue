@@ -1,14 +1,15 @@
 <template>
   <main class="shadow sm:rounded-lg" id="about">
-    <div class="px-4 py-5">
-      <h2 class="text-3xl my-2 py-2 text-center text-jet-black">DASHBOARD</h2>
-      <div class="flex flex-col items-center bg-gray-100 p-4 rounded-md">
-        <p>
-          Welcome to the dashboard,
-          <span v-if="authData" class="text-lg font-semibold text-gray-700">
-            {{ authData.username }}
-          </span>
-        </p>
+    <div class="px-4 py-8 sm:px-6 lg:px-8">
+      <h2 class="text-4xl font-bold text-center text-gray-900 mb-8">Dashboard</h2>
+      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
+      <p class="text-center text-lg text-gray-700">
+        Welcome back,
+        <span v-if="authData" class="font-bold text-indigo-600">
+        {{ authData.username }}
+        </span>
+        <span v-else class="font-semibold text-gray-500">Guest</span>
+      </p>
       </div>
       <DashboardMenu />
     </div>

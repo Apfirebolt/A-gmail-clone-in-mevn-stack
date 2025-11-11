@@ -6,23 +6,29 @@
         <p>Welcome to the email compose page</p>
       </div>
       <DashboardMenu />
-      <form class="w-full max-w-lg mt-6" @submit.prevent="sentEmailUtil">
-        <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="recepients">
-            Select Recepients
+      <form
+        class="w-full max-w-2xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-lg"
+        @submit.prevent="sentEmailUtil"
+      >
+        <div class="mb-6">
+          <label
+            class="block text-gray-800 text-sm font-semibold mb-2"
+            for="recepients"
+          >
+            Select Recipients
           </label>
           <Combobox v-model="selected">
             <div class="relative mt-1">
               <div
-                class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm"
+                class="relative w-full cursor-default overflow-hidden rounded-md bg-white text-left border border-gray-300 focus-within:border-primary-200 focus-within:ring-2 focus-within:ring-blue-200 transition-all"
               >
                 <ComboboxInput
-                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  class="w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none"
                   :displayValue="(person) => person.email"
                   @change="query = $event.target.value"
                 />
                 <ComboboxButton
-                  class="inset-y-0 right-0 flex items-center pr-2"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3"
                 >
                 </ComboboxButton>
               </div>
@@ -33,11 +39,11 @@
                 @after-leave="query = ''"
               >
                 <ComboboxOptions
-                  class="mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+                  class="absolute z-10 mt-2 max-h-60 w-full overflow-auto rounded-md bg-white py-1 shadow-xl border border-gray-200 focus:outline-none"
                 >
                   <div
                     v-if="filteredPeople.length === 0 && query !== ''"
-                    class="relative cursor-default select-none px-4 py-2 text-gray-700"
+                    class="relative cursor-default select-none px-4 py-3 text-gray-500"
                   >
                     Nothing found.
                   </div>
@@ -50,16 +56,16 @@
                     v-slot="{ selected, active }"
                   >
                     <li
-                      class="relative cursor-default select-none py-2 pl-10 pr-4"
+                      class="relative cursor-pointer select-none py-3 pl-10 pr-4"
                       :class="{
-                        'bg-secondary-100 text-white': active,
+                        'bg-primary-300 text-white': active,
                         'text-gray-900': !active,
                       }"
                     >
                       <span
                         class="block truncate"
                         :class="{
-                          'font-medium': selected,
+                          'font-semibold': selected,
                           'font-normal': !selected,
                         }"
                       >
@@ -70,7 +76,7 @@
                         class="absolute inset-y-0 left-0 flex items-center pl-3"
                         :class="{
                           'text-white': active,
-                          'text-teal-600': !active,
+                          'text-blue-600': !active,
                         }"
                       >
                       </span>
@@ -81,36 +87,45 @@
             </div>
           </Combobox>
         </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="subject">
+        <div class="mb-6">
+          <label
+            class="block text-gray-800 text-sm font-semibold mb-2"
+            for="subject"
+          >
             Subject
           </label>
           <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full py-3 px-4 border border-gray-300 rounded-md text-gray-700 leading-tight focus:outline-none focus:border-primary-200 focus:ring-2 focus:ring-blue-200 transition-all"
             id="subject"
             v-model="subject"
             type="text"
             placeholder="Enter subject"
           />
         </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="body">
+        <div class="mb-6">
+          <label
+            class="block text-gray-800 text-sm font-semibold mb-2"
+            for="body"
+          >
             Body
           </label>
           <textarea
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full py-3 px-4 border border-gray-300 rounded-md text-gray-700 leading-tight focus:outline-none focus:border-primary-200 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
             id="body"
             v-model="body"
-            rows="5"
+            rows="8"
             placeholder="Enter email body"
           ></textarea>
         </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="attachment">
+        <div class="mb-6">
+          <label
+            class="block text-gray-800 text-sm font-semibold mb-2"
+            for="attachment"
+          >
             Attachment
           </label>
           <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full py-2 px-3 border border-gray-300 rounded-md text-gray-700 leading-tight focus:outline-none focus:border-primary-200 focus:ring-2 focus:ring-blue-200 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
             id="attachment"
             type="file"
             @change="handleFileChange"
@@ -118,17 +133,19 @@
         </div>
         <ul
           v-if="errorList.length > 0"
-          class="list-disc list-inside text-danger my-3"
+          class="list-disc list-inside text-red-600 bg-red-50 p-4 rounded-md mb-6"
         >
-          <li v-for="error in errorList" :key="error">{{ error }}</li>
+          <li v-for="error in errorList" :key="error" class="py-1">
+            {{ error }}
+          </li>
         </ul>
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-end gap-3">
           <button
-            class="text-black bg-primary-200 hover:bg-secondary-100 hover:text-white transition-all duration-300 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            class="bg-secondary-100 hover:bg-secondary-200 text-white hover:text-black font-semibold py-3 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-200 focus:ring-offset-2 transition-all duration-200 shadow-sm"
             type="button"
             @click="sentEmailUtil"
           >
-            Send
+            Send Email
           </button>
         </div>
       </form>
