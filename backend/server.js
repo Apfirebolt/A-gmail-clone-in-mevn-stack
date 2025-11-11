@@ -8,12 +8,15 @@ import cookieParser from 'cookie-parser';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import emailRoutes from './routes/mailRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 
 const port = process.env.PORT || 5000;
 
 connectDB();
 
 const app = express();
+
+app.use("/api/payments", paymentRoutes); 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
